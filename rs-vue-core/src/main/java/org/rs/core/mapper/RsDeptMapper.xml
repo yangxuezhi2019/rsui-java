@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsDeptMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsDept">
+		<result column="BMBH" property="bmbh"/>
+		<result column="BMDM" property="bmdm"/>
+		<result column="BMMC" property="bmmc"/>
+		<result column="BMPBH" property="bmpbh"/>
+		<result column="BMZT" property="bmzt"/>
+		<result column="BMLJ" property="bmlj"/>
+		<result column="BMCJ" property="bmcj"/>
+		<result column="BMXH" property="bmxh"/>
+		<result column="BMFH" property="bmfh"/>
+		<result column="CJSJ" property="cjsj"/>
+		<result column="CJRBH" property="cjrbh"/>
+		<result column="CJRMC" property="cjrmc"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		BMBH,BMDM,BMMC,BMPBH,BMZT,BMLJ,BMCJ,BMXH,BMFH,CJSJ,CJRBH,CJRMC
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.bmbh !=null and params.bmbh !=""'>AND BMBH=#{params.bmbh}</if>
+			<if test='params.bmdm !=null and params.bmdm !=""'>AND BMDM=#{params.bmdm}</if>
+			<if test='params.bmmc !=null and params.bmmc !=""'>AND BMMC like ${params.bmmc}</if>
+			<if test='params.bmpbh !=null and params.bmpbh !=""'>AND BMPBH=#{params.bmpbh}</if>
+			<if test='params.bmzt !=null '>AND BMZT=#{params.bmzt}</if>
+			<if test='params.bmlj !=null and params.bmlj !=""'>AND BMLJ like ${params.bmlj}</if>
+			<if test='params.bmcj !=null '>AND BMCJ=#{params.bmcj}</if>
+			<if test='params.bmxh !=null '>AND BMXH=#{params.bmxh}</if>
+			<if test='params.bmfh !=null '>AND BMFH=#{params.bmfh}</if>
+			<if test="params.startCjsj != null " >AND CJSJ &gt;= #{params.startCjsj}</if>
+			<if test="params.endCjsj != null " >AND CJSJ &lt;= #{params.endCjsj}</if>
+			<if test='params.cjrbh !=null and params.cjrbh !=""'>AND CJRBH=#{params.cjrbh}</if>
+			<if test='params.cjrmc !=null and params.cjrmc !=""'>AND CJRMC=#{params.cjrmc}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DEPT <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DEPT WHERE BMBH=#{bmbh}
+	</select>
+	<select id="queryBeanForUpdateById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DEPT WHERE BMBH=#{bmbh} FOR UPDATE
+	</select>
+	<select id="queryBeanByBmdm" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DEPT WHERE BMDM=#{bmdm}
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsDept">
+		INSERT INTO RS_DEPT(<include refid="sqlColumns"/>)
+		VALUES(#{bmbh,jdbcType=VARCHAR},#{bmdm,jdbcType=VARCHAR},#{bmmc,jdbcType=VARCHAR},#{bmpbh,jdbcType=VARCHAR},#{bmzt,jdbcType=INTEGER},#{bmlj,jdbcType=VARCHAR},#{bmcj,jdbcType=INTEGER},#{bmxh,jdbcType=INTEGER},#{bmfh,jdbcType=INTEGER},#{cjsj,jdbcType=TIMESTAMP},#{cjrbh,jdbcType=VARCHAR},#{cjrmc,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateBean" parameterType="org.rs.core.beans.RsDept">
+		UPDATE RS_DEPT SET
+		BMDM=#{bmdm,jdbcType=VARCHAR},BMMC=#{bmmc,jdbcType=VARCHAR},BMPBH=#{bmpbh,jdbcType=VARCHAR},BMZT=#{bmzt,jdbcType=INTEGER},BMLJ=#{bmlj,jdbcType=VARCHAR},BMCJ=#{bmcj,jdbcType=INTEGER},BMXH=#{bmxh,jdbcType=INTEGER},BMFH=#{bmfh,jdbcType=INTEGER},CJSJ=#{cjsj,jdbcType=TIMESTAMP},CJRBH=#{cjrbh,jdbcType=VARCHAR},CJRMC=#{cjrmc,jdbcType=VARCHAR}
+		WHERE BMBH=#{bmbh}
+	</update>
+	<update id="updateChkBean" parameterType="org.rs.core.beans.RsDept">
+		UPDATE RS_DEPT
+		<trim prefix="SET" suffixOverrides=",">
+			<if test='bmdm !=null '>BMDM=#{bmdm,jdbcType=VARCHAR},</if>
+			<if test='bmmc !=null '>BMMC=#{bmmc,jdbcType=VARCHAR},</if>
+			<if test='bmpbh !=null '>BMPBH=#{bmpbh,jdbcType=VARCHAR},</if>
+			<if test='bmzt !=null '>BMZT=#{bmzt,jdbcType=INTEGER},</if>
+			<if test='bmlj !=null '>BMLJ=#{bmlj,jdbcType=VARCHAR},</if>
+			<if test='bmcj !=null '>BMCJ=#{bmcj,jdbcType=INTEGER},</if>
+			<if test='bmxh !=null '>BMXH=#{bmxh,jdbcType=INTEGER},</if>
+			<if test='bmfh !=null '>BMFH=#{bmfh,jdbcType=INTEGER},</if>
+			<if test='cjsj !=null '>CJSJ=#{cjsj,jdbcType=TIMESTAMP},</if>
+			<if test='cjrbh !=null '>CJRBH=#{cjrbh,jdbcType=VARCHAR},</if>
+			<if test='cjrmc !=null '>CJRMC=#{cjrmc,jdbcType=VARCHAR},</if>
+		</trim>
+		WHERE BMBH=#{bmbh}
+	</update>
+	<delete id="deleteBeanById">
+		DELETE FROM RS_DEPT where BMBH=#{bmbh}
+	</delete>
+	<delete id="deleteBeanByWhereCause">
+		DELETE FROM RS_DEPT where ${whereCause}
+	</delete>
+</mapper>

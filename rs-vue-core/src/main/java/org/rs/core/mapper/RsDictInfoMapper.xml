@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsDictInfoMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsDictInfo">
+		<result column="TMZJ" property="tmzj"/>
+		<result column="ZDBH" property="zdbh"/>
+		<result column="TMPBH" property="tmpbh"/>
+		<result column="TMBH" property="tmbh"/>
+		<result column="TMMC" property="tmmc"/>
+		<result column="TMXH" property="tmxh"/>
+		<result column="TMZT" property="tmzt"/>
+		<result column="CJSJ" property="cjsj"/>
+		<result column="CJRBH" property="cjrbh"/>
+		<result column="CJRMC" property="cjrmc"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		TMZJ,ZDBH,TMPBH,TMBH,TMMC,TMXH,TMZT,CJSJ,CJRBH,CJRMC
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.tmzj !=null and params.tmzj !=""'>AND TMZJ=#{params.tmzj}</if>
+			<if test='params.zdbh !=null and params.zdbh !=""'>AND ZDBH=#{params.zdbh}</if>
+			<if test='params.tmpbh !=null and params.tmpbh !=""'>AND TMPBH=#{params.tmpbh}</if>
+			<if test='params.tmbh !=null and params.tmbh !=""'>AND TMBH=#{params.tmbh}</if>
+			<if test='params.tmmc !=null and params.tmmc !=""'>AND TMMC like ${params.tmmc}</if>
+			<if test='params.tmxh !=null '>AND TMXH=#{params.tmxh}</if>
+			<if test='params.tmzt !=null '>AND TMZT=#{params.tmzt}</if>
+			<if test="params.startCjsj != null " >AND CJSJ &gt;= #{params.startCjsj}</if>
+			<if test="params.endCjsj != null " >AND CJSJ &lt;= #{params.endCjsj}</if>
+			<if test='params.cjrbh !=null and params.cjrbh !=""'>AND CJRBH=#{params.cjrbh}</if>
+			<if test='params.cjrmc !=null and params.cjrmc !=""'>AND CJRMC=#{params.cjrmc}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DICT_INFO <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DICT_INFO WHERE TMZJ=#{tmzj}
+	</select>
+	<select id="queryBeanForUpdateById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DICT_INFO WHERE TMZJ=#{tmzj} FOR UPDATE
+	</select>
+	<select id="queryBeanByZdbhAndTmbh" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DICT_INFO WHERE ZDBH=#{zdbh} AND TMBH=#{tmbh}
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsDictInfo">
+		INSERT INTO RS_DICT_INFO(<include refid="sqlColumns"/>)
+		VALUES(#{tmzj,jdbcType=VARCHAR},#{zdbh,jdbcType=VARCHAR},#{tmpbh,jdbcType=VARCHAR},#{tmbh,jdbcType=VARCHAR},#{tmmc,jdbcType=VARCHAR},#{tmxh,jdbcType=INTEGER},#{tmzt,jdbcType=INTEGER},#{cjsj,jdbcType=TIMESTAMP},#{cjrbh,jdbcType=VARCHAR},#{cjrmc,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateBean" parameterType="org.rs.core.beans.RsDictInfo">
+		UPDATE RS_DICT_INFO SET
+		ZDBH=#{zdbh,jdbcType=VARCHAR},TMPBH=#{tmpbh,jdbcType=VARCHAR},TMBH=#{tmbh,jdbcType=VARCHAR},TMMC=#{tmmc,jdbcType=VARCHAR},TMXH=#{tmxh,jdbcType=INTEGER},TMZT=#{tmzt,jdbcType=INTEGER},CJSJ=#{cjsj,jdbcType=TIMESTAMP},CJRBH=#{cjrbh,jdbcType=VARCHAR},CJRMC=#{cjrmc,jdbcType=VARCHAR}
+		WHERE TMZJ=#{tmzj}
+	</update>
+	<update id="updateChkBean" parameterType="org.rs.core.beans.RsDictInfo">
+		UPDATE RS_DICT_INFO
+		<trim prefix="SET" suffixOverrides=",">
+			<if test='zdbh !=null '>ZDBH=#{zdbh,jdbcType=VARCHAR},</if>
+			<if test='tmpbh !=null '>TMPBH=#{tmpbh,jdbcType=VARCHAR},</if>
+			<if test='tmbh !=null '>TMBH=#{tmbh,jdbcType=VARCHAR},</if>
+			<if test='tmmc !=null '>TMMC=#{tmmc,jdbcType=VARCHAR},</if>
+			<if test='tmxh !=null '>TMXH=#{tmxh,jdbcType=INTEGER},</if>
+			<if test='tmzt !=null '>TMZT=#{tmzt,jdbcType=INTEGER},</if>
+			<if test='cjsj !=null '>CJSJ=#{cjsj,jdbcType=TIMESTAMP},</if>
+			<if test='cjrbh !=null '>CJRBH=#{cjrbh,jdbcType=VARCHAR},</if>
+			<if test='cjrmc !=null '>CJRMC=#{cjrmc,jdbcType=VARCHAR},</if>
+		</trim>
+		WHERE TMZJ=#{tmzj}
+	</update>
+	<delete id="deleteBeanById">
+		DELETE FROM RS_DICT_INFO where TMZJ=#{tmzj}
+	</delete>
+	<delete id="deleteBeanByWhereCause">
+		DELETE FROM RS_DICT_INFO where ${whereCause}
+	</delete>
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsRoleUrlMapper">
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsRoleUrl">
+		INSERT INTO RS_ROLE_URL(JSBH,URL,CJSJ,CJRBH,CJRMC)
+		VALUES(#{jsbh,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR},#{cjsj,jdbcType=TIMESTAMP},#{cjrbh,jdbcType=VARCHAR},#{cjrmc,jdbcType=VARCHAR})
+	</insert>
+	<delete id="deleteBean" parameterType="org.rs.core.beans.RsRoleUrl">
+		DELETE FROM RS_ROLE_URL WHERE JSBH=#{jsbh} AND URL=#{url}
+	</delete>
+	<delete id="deleteRoleUrlByUrl">
+		DELETE FROM RS_ROLE_URL WHERE URL=#{url}
+	</delete>
+	<delete id="deleteRoleUrlByJsbh">
+		DELETE FROM RS_ROLE_URL WHERE JSBH=#{jsbh}
+	</delete>
+</mapper>

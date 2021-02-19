@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsMenuMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsMenu">
+		<result column="CDBH" property="cdbh"/>
+		<result column="PCDBH" property="pcdbh"/>
+		<result column="CDMC" property="cdmc"/>
+		<result column="ICON" property="icon"/>
+		<result column="CDLJ" property="cdlj"/>
+		<result column="CDLX" property="cdlx"/>
+		<result column="SFHC" property="sfhc"/>
+		<result column="CDZT" property="cdzt"/>
+		<result column="CDXH" property="cdxh"/>
+		<result column="CJSJ" property="cjsj"/>
+		<result column="CJRBH" property="cjrbh"/>
+		<result column="CJRMC" property="cjrmc"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		CDBH,PCDBH,CDMC,ICON,CDLJ,CDLX,SFHC,CDZT,CDXH,CJSJ,CJRBH,CJRMC
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.cdbh !=null and params.cdbh !=""'>AND CDBH=#{params.cdbh}</if>
+			<if test='params.pcdbh !=null and params.pcdbh !=""'>AND PCDBH=#{params.pcdbh}</if>
+			<if test='params.cdmc !=null and params.cdmc !=""'>AND CDMC=#{params.cdmc}</if>
+			<if test='params.icon !=null and params.icon !=""'>AND ICON=#{params.icon}</if>
+			<if test='params.cdlj !=null and params.cdlj !=""'>AND CDLJ=#{params.cdlj}</if>
+			<if test='params.cdlx !=null '>AND CDLX=#{params.cdlx}</if>
+			<if test='params.sfhc !=null '>AND SFHC=#{params.sfhc}</if>
+			<if test='params.cdzt !=null '>AND CDZT=#{params.cdzt}</if>
+			<if test='params.cdxh !=null and params.cdxh !=""'>AND CDXH=#{params.cdxh}</if>
+			<if test="params.startCjsj != null " >AND CJSJ &gt;= #{params.startCjsj}</if>
+			<if test="params.endCjsj != null " >AND CJSJ &lt;= #{params.endCjsj}</if>
+			<if test='params.cjrbh !=null and params.cjrbh !=""'>AND CJRBH=#{params.cjrbh}</if>
+			<if test='params.cjrmc !=null and params.cjrmc !=""'>AND CJRMC like ${params.cjrmc}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_MENU <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_MENU WHERE CDBH=#{cdbh}
+	</select>
+	<select id="queryBeanForUpdateById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_MENU WHERE CDBH=#{cdbh} FOR UPDATE
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsMenu">
+		INSERT INTO RS_MENU(<include refid="sqlColumns"/>)
+		VALUES(#{cdbh,jdbcType=VARCHAR},#{pcdbh,jdbcType=VARCHAR},#{cdmc,jdbcType=VARCHAR},#{icon,jdbcType=VARCHAR},#{cdlj,jdbcType=VARCHAR},#{cdlx,jdbcType=INTEGER},#{sfhc,jdbcType=INTEGER},#{cdzt,jdbcType=INTEGER},#{cdxh,jdbcType=VARCHAR},#{cjsj,jdbcType=TIMESTAMP},#{cjrbh,jdbcType=VARCHAR},#{cjrmc,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateBean" parameterType="org.rs.core.beans.RsMenu">
+		UPDATE RS_MENU SET
+		PCDBH=#{pcdbh,jdbcType=VARCHAR},CDMC=#{cdmc,jdbcType=VARCHAR},ICON=#{icon,jdbcType=VARCHAR},CDLJ=#{cdlj,jdbcType=VARCHAR},CDLX=#{cdlx,jdbcType=INTEGER},SFHC=#{sfhc,jdbcType=INTEGER},CDZT=#{cdzt,jdbcType=INTEGER},CDXH=#{cdxh,jdbcType=VARCHAR},CJSJ=#{cjsj,jdbcType=TIMESTAMP},CJRBH=#{cjrbh,jdbcType=VARCHAR},CJRMC=#{cjrmc,jdbcType=VARCHAR}
+		WHERE CDBH=#{cdbh}
+	</update>
+	<update id="updateChkBean" parameterType="org.rs.core.beans.RsMenu">
+		UPDATE RS_MENU
+		<trim prefix="SET" suffixOverrides=",">
+			<if test='pcdbh !=null '>PCDBH=#{pcdbh,jdbcType=VARCHAR},</if>
+			<if test='cdmc !=null '>CDMC=#{cdmc,jdbcType=VARCHAR},</if>
+			<if test='icon !=null '>ICON=#{icon,jdbcType=VARCHAR},</if>
+			<if test='cdlj !=null '>CDLJ=#{cdlj,jdbcType=VARCHAR},</if>
+			<if test='cdlx !=null '>CDLX=#{cdlx,jdbcType=INTEGER},</if>
+			<if test='sfhc !=null '>SFHC=#{sfhc,jdbcType=INTEGER},</if>
+			<if test='cdzt !=null '>CDZT=#{cdzt,jdbcType=INTEGER},</if>
+			<if test='cdxh !=null '>CDXH=#{cdxh,jdbcType=VARCHAR},</if>
+			<if test='cjsj !=null '>CJSJ=#{cjsj,jdbcType=TIMESTAMP},</if>
+			<if test='cjrbh !=null '>CJRBH=#{cjrbh,jdbcType=VARCHAR},</if>
+			<if test='cjrmc !=null '>CJRMC=#{cjrmc,jdbcType=VARCHAR},</if>
+		</trim>
+		WHERE CDBH=#{cdbh}
+	</update>
+	<delete id="deleteBeanById">
+		DELETE FROM RS_MENU where CDBH=#{cdbh}
+	</delete>
+	<delete id="deleteBeanByWhereCause">
+		DELETE FROM RS_MENU where ${whereCause}
+	</delete>
+</mapper>

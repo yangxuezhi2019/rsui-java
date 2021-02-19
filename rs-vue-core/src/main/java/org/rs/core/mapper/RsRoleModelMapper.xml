@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsRoleModelMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.model.RsRoleModel"
+		extends="org.rs.core.mapper.RsRoleMapper.result_map">
+		<result column="JSLXMC" property="jslxmc"/>
+		<result column="JSJBMC" property="jsjbmc"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		JSZJ,JSBH,JSMC,JSLX,JSJB,JSXH,CJSJ,CJRBH,CJRMC
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.jszj !=null and params.jszj !=""'>AND JSZJ=#{params.jszj}</if>
+			<if test='params.jsbh !=null and params.jsbh !=""'>AND JSBH=#{params.jsbh}</if>
+			<if test='params.jsmc !=null and params.jsmc !=""'>AND JSMC like ${params.jsmc}</if>
+			<if test='params.jslx !=null '>AND JSLX=#{params.jslx}</if>
+			<if test='params.jsjb !=null '>AND JSJB=#{params.jsjb}</if>
+			<if test='params.jsxh !=null '>AND JSXH=#{params.jsxh}</if>
+			<if test="params.startCjsj != null " >AND CJSJ &gt;= #{params.startCjsj}</if>
+			<if test="params.endCjsj != null " >AND CJSJ &lt;= #{params.endCjsj}</if>
+			<if test='params.cjrbh !=null and params.cjrbh !=""'>AND CJRBH=#{params.cjrbh}</if>
+			<if test='params.cjrmc !=null and params.cjrmc !=""'>AND CJRMC=#{params.cjrmc}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+			<if test='params.yhbh !=null '>AND JSBH IN (SELECT JSBH FROM RS_ROLE_USER WHERE YHBH=#{params.yhbh})</if>
+			<if test='params.noyhbh !=null '>AND JSBH NOT IN (SELECT JSBH FROM RS_ROLE_USER WHERE YHBH=#{params.noyhbh})</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT A.*,B.TMMC AS JSLXMC,C.TMMC AS JSJBMC FROM RS_ROLE A 
+		LEFT JOIN (SELECT TMBH,TMMC FROM RS_DICT_INFO WHERE ZDBH='roleType') B ON A.JSLX=B.TMBH
+		LEFT JOIN (SELECT TMBH,TMMC FROM RS_DICT_INFO WHERE ZDBH='roleLevel') C ON A.JSJB=C.TMBH <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+</mapper>

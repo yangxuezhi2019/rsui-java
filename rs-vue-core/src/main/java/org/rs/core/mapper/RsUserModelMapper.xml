@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsUserModelMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.model.RsUserModel"
+		extends="org.rs.core.mapper.RsUserMapper.result_map">
+		<result column="BMDM" property="bmdm"/>
+		<result column="BMMC" property="bmmc"/>
+		<result column="BMLJ" property="bmlj"/>
+		<result column="BMCJ" property="bmcj"/>
+	</resultMap>
+	<resultMap id="result_map_all" type="org.rs.core.beans.model.RsUserAllModel"
+		extends="org.rs.core.mapper.RsUserModelMapper.result_map">
+		<collection property="depts" javaType="ArrayList" column="yhbh=yhbh"
+			select="org.rs.core.mapper.RsUserModelMapper.queryDeptList"/>
+		<collection property="roles" javaType="ArrayList" column="yhbh=yhbh"
+			select="org.rs.core.mapper.RsUserModelMapper.queryRoleList"/>
+	</resultMap>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.yhbh !=null and params.yhbh !=""'>AND YHBH=#{params.yhbh}</if>
+			<if test='params.dlmc !=null and params.dlmc !=""'>AND DLMC=#{params.dlmc}</if>
+			<if test='params.yhmc !=null and params.yhmc !=""'>AND YHMC like ${params.yhmc}</if>
+			<if test='params.bmbh !=null and params.bmbh !=""'>AND A.BMBH=#{params.bmbh}</if>
+			<if test='params.phone !=null and params.phone !=""'>AND A.PHONE like ${params.phone}</if>
+			<if test='params.email !=null and params.email !=""'>AND A.EMAIL like ${params.email}</if>
+			<if test='params.address !=null and params.address !=""'>AND A.ADDRESS like ${params.address}</if>
+			<if test='params.sffh !=null '>AND A.SFFH=#{params.sffh}</if>
+			<if test='params.yhlx !=null '>AND A.YHLX=#{params.yhlx}</if>
+			<if test='params.yhzt !=null '>AND A.YHZT=#{params.yhzt}</if>
+			<if test='params.dlcs !=null '>AND A.DLCS=#{params.dlcs}</if>
+			<if test='params.cqjc !=null '>AND A.CQJC=#{params.cqjc}</if>
+			<if test="params.startCjsj != null " >AND A.CJSJ &gt;= #{params.startCjsj}</if>
+			<if test="params.endCjsj != null " >AND A.CJSJ &lt;= #{params.endCjsj}</if>
+			<if test='params.cjrbh !=null and params.cjrbh !=""'>AND A.CJRBH=#{params.cjrbh}</if>
+			<if test='params.cjrmc !=null and params.cjrmc !=""'>AND A.CJRMC=#{params.cjrmc}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+			<if test='params.injsbh !=null and params.injsbh !=""'>AND A.YHBH IN (SELECT YHBH FROM RS_ROLE_USER WHERE JSBH=#{params.injsbh})</if>
+			<if test='params.nojsbh !=null and params.nojsbh !=""'>AND A.YHBH NOT IN (SELECT YHBH FROM RS_ROLE_USER WHERE JSBH=#{params.nojsbh})</if>
+			<if test='params.inbmbh !=null and params.inbmbh !=""'>AND A.YHBH IN (SELECT YHBH FROM RS_DEPT_USER WHERE BMBH=#{params.inbmbh})</if>
+			<if test='params.nobmbh !=null and params.nobmbh !=""'>AND A.YHBH NOT IN (SELECT YHBH FROM RS_DEPT_USER WHERE BMBH=#{params.nobmbh})</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT A.*,B.BMDM,B.BMMC,B.BMLJ,B.BMCJ FROM RS_USER A INNER JOIN RS_DEPT B ON A.BMBH=B.BMBH <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanHasDeptsByYhbh" resultMap="result_map_all" parameterType="java.util.Map" flushCache="true">
+		SELECT A.*,B.BMDM,B.BMMC,B.BMLJ,B.BMCJ FROM RS_USER A INNER JOIN RS_DEPT B ON A.BMBH=B.BMBH WHERE YHBH=#{yhbh}
+	</select>
+	<select id="queryDeptList" resultMap="org.rs.core.mapper.RsDeptMapper.result_map" flushCache="true">
+		SELECT A.* FROM RS_DEPT A INNER JOIN RS_DEPT_USER B ON A.BMBH=B.BMBH WHERE B.YHBH=#{yhbh}
+		ORDER BY A.BMXH
+	</select>
+	<select id="queryRoleList" resultMap="org.rs.core.mapper.RsRoleMapper.result_map" flushCache="true">
+		SELECT A.* FROM RS_ROLE A INNER JOIN RS_ROLE_USER B ON A.JSBH=B.JSBH WHERE B.YHBH=#{yhbh}
+		ORDER BY A.JSXH
+	</select>
+	<update id="updateUserDept">
+		UPDATE RS_USER SET BMBH=#{bmbh} WHERE YHBH=#{yhbh}
+	</update>
+</mapper>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsRoleMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsRole">
+		<result column="JSBH" property="jsbh"/>
+		<result column="JSNM" property="jsnm"/>
+		<result column="JSMC" property="jsmc"/>
+		<result column="JSLX" property="jslx"/>
+		<result column="JSJB" property="jsjb"/>
+		<result column="JSXH" property="jsxh"/>
+		<result column="JSZT" property="jszt"/>
+		<result column="CJSJ" property="cjsj"/>
+		<result column="CJRBH" property="cjrbh"/>
+		<result column="CJRMC" property="cjrmc"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		JSBH,JSNM,JSMC,JSLX,JSJB,JSXH,JSZT,CJSJ,CJRBH,CJRMC
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.jsbh !=null and params.jsbh !=""'>AND JSBH=#{params.jsbh}</if>
+			<if test='params.jsnm !=null and params.jsnm !=""'>AND JSNM=#{params.jsnm}</if>
+			<if test='params.jsmc !=null and params.jsmc !=""'>AND JSMC like ${params.jsmc}</if>
+			<if test='params.jslx !=null '>AND JSLX=#{params.jslx}</if>
+			<if test='params.jsjb !=null '>AND JSJB=#{params.jsjb}</if>
+			<if test='params.jsxh !=null '>AND JSXH=#{params.jsxh}</if>
+			<if test='params.jszt !=null '>AND JSZT=#{params.jszt}</if>
+			<if test="params.startCjsj != null " >AND CJSJ &gt;= #{params.startCjsj}</if>
+			<if test="params.endCjsj != null " >AND CJSJ &lt;= #{params.endCjsj}</if>
+			<if test='params.cjrbh !=null and params.cjrbh !=""'>AND CJRBH=#{params.cjrbh}</if>
+			<if test='params.cjrmc !=null and params.cjrmc !=""'>AND CJRMC=#{params.cjrmc}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_ROLE <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_ROLE WHERE JSBH=#{jsbh}
+	</select>
+	<select id="queryBeanForUpdateById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_ROLE WHERE JSBH=#{jsbh} FOR UPDATE
+	</select>
+	<select id="queryBeanByJsnm" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_ROLE WHERE JSNM=#{jsnm}
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsRole">
+		INSERT INTO RS_ROLE(<include refid="sqlColumns"/>)
+		VALUES(#{jsbh,jdbcType=VARCHAR},#{jsnm,jdbcType=VARCHAR},#{jsmc,jdbcType=VARCHAR},#{jslx,jdbcType=INTEGER},#{jsjb,jdbcType=INTEGER},#{jsxh,jdbcType=INTEGER},#{jszt,jdbcType=INTEGER},#{cjsj,jdbcType=TIMESTAMP},#{cjrbh,jdbcType=VARCHAR},#{cjrmc,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateBean" parameterType="org.rs.core.beans.RsRole">
+		UPDATE RS_ROLE SET
+		JSNM=#{jsnm,jdbcType=VARCHAR},JSMC=#{jsmc,jdbcType=VARCHAR},JSLX=#{jslx,jdbcType=INTEGER},JSJB=#{jsjb,jdbcType=INTEGER},JSXH=#{jsxh,jdbcType=INTEGER},JSZT=#{jszt,jdbcType=INTEGER},CJSJ=#{cjsj,jdbcType=TIMESTAMP},CJRBH=#{cjrbh,jdbcType=VARCHAR},CJRMC=#{cjrmc,jdbcType=VARCHAR}
+		WHERE JSBH=#{jsbh}
+	</update>
+	<update id="updateChkBean" parameterType="org.rs.core.beans.RsRole">
+		UPDATE RS_ROLE
+		<trim prefix="SET" suffixOverrides=",">
+			<if test='jsnm !=null '>JSNM=#{jsnm,jdbcType=VARCHAR},</if>
+			<if test='jsmc !=null '>JSMC=#{jsmc,jdbcType=VARCHAR},</if>
+			<if test='jslx !=null '>JSLX=#{jslx,jdbcType=INTEGER},</if>
+			<if test='jsjb !=null '>JSJB=#{jsjb,jdbcType=INTEGER},</if>
+			<if test='jsxh !=null '>JSXH=#{jsxh,jdbcType=INTEGER},</if>
+			<if test='jszt !=null '>JSZT=#{jszt,jdbcType=INTEGER},</if>
+			<if test='cjsj !=null '>CJSJ=#{cjsj,jdbcType=TIMESTAMP},</if>
+			<if test='cjrbh !=null '>CJRBH=#{cjrbh,jdbcType=VARCHAR},</if>
+			<if test='cjrmc !=null '>CJRMC=#{cjrmc,jdbcType=VARCHAR},</if>
+		</trim>
+		WHERE JSBH=#{jsbh}
+	</update>
+	<delete id="deleteBeanById">
+		DELETE FROM RS_ROLE where JSBH=#{jsbh}
+	</delete>
+	<delete id="deleteBeanByWhereCause">
+		DELETE FROM RS_ROLE where ${whereCause}
+	</delete>
+</mapper>

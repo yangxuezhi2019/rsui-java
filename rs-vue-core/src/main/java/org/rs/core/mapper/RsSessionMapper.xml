@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsSessionMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsSession">
+		<result column="PRIMARY_ID" property="primary_id"/>
+		<result column="SESSION_ID" property="session_id"/>
+		<result column="CREATION_TIME" property="creation_time"/>
+		<result column="LAST_ACCESS_TIME" property="last_access_time"/>
+		<result column="MAX_INACTIVE_INTERVAL" property="max_inactive_interval"/>
+		<result column="EXPIRY_TIME" property="expiry_time"/>
+		<result column="IP_ADDR" property="ip_addr"/>
+		<result column="PRINCIPAL_NAME" property="principal_name"/>
+	</resultMap>
+	<resultMap id="result_attribute_map" type="org.rs.core.beans.RsSessionAttribute">
+		<result column="SESSION_PRIMARY_ID" property="session_primary_id"/>
+		<result column="ATTRIBUTE_NAME" property="attribute_name"/>
+		<result column="ATTRIBUTE_BYTES" property="attribute_bytes"/>
+	</resultMap>
+	<resultMap id="result_map_model" type="org.rs.core.beans.model.RsSessionModel"
+		extends="org.rs.core.mapper.RsSessionMapper.result_map">
+		<collection property="sessionAttrs" javaType="ArrayList" column="session_primary_id=primary_id"
+			select="org.rs.core.mapper.RsSessionMapper.findAttributeListByPrimaryId"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		PRIMARY_ID,SESSION_ID,CREATION_TIME,LAST_ACCESS_TIME,MAX_INACTIVE_INTERVAL,EXPIRY_TIME,IP_ADDR,PRINCIPAL_NAME
+	</sql>
+	<sql id="sqlAttributeColumns">
+		SESSION_PRIMARY_ID,ATTRIBUTE_NAME,ATTRIBUTE_BYTES
+	</sql>
+	<insert id="insertSession" parameterType="org.rs.core.beans.RsSession">
+		INSERT INTO SYS_SESSION(<include refid="sqlColumns"/>)
+		VALUES(#{primary_id,jdbcType=VARCHAR},#{session_id,jdbcType=VARCHAR},#{creation_time,jdbcType=BIGINT},#{last_access_time,jdbcType=BIGINT},#{max_inactive_interval,jdbcType=INTEGER},#{expiry_time,jdbcType=BIGINT},#{ip_addr,jdbcType=VARCHAR},#{principal_name,jdbcType=VARCHAR})
+	</insert>	
+	<update id="updateSession" parameterType="org.rs.core.beans.RsSession">
+		UPDATE SYS_SESSION SET
+		SESSION_ID=#{session_id,jdbcType=VARCHAR},
+		CREATION_TIME=#{creation_time,jdbcType=BIGINT},
+		LAST_ACCESS_TIME=#{last_access_time,jdbcType=BIGINT},
+		MAX_INACTIVE_INTERVAL=#{max_inactive_interval,jdbcType=INTEGER},
+		EXPIRY_TIME=#{expiry_time,jdbcType=BIGINT},
+		IP_ADDR=#{ip_addr,jdbcType=VARCHAR},
+		PRINCIPAL_NAME=#{principal_name,jdbcType=VARCHAR}
+		WHERE PRIMARY_ID=#{primary_id}
+	</update>
+	<insert id="insertAttribute" parameterType="org.rs.core.beans.RsSessionAttribute">
+		INSERT INTO SYS_SESSION_ATTRIBUTES(<include refid="sqlAttributeColumns"/>)
+		VALUES(#{session_primary_id,jdbcType=VARCHAR},#{attribute_name,jdbcType=VARCHAR},#{attribute_bytes,jdbcType=BLOB})
+	</insert>	
+	<update id="updateAttribute" parameterType="org.rs.core.beans.RsSessionAttribute">
+		UPDATE SYS_SESSION_ATTRIBUTES SET
+		ATTRIBUTE_NAME=#{attribute_name,jdbcType=VARCHAR},
+		ATTRIBUTE_BYTES=#{attribute_bytes,jdbcType=BIGINT}
+		WHERE SESSION_PRIMARY_ID=#{session_primary_id}
+	</update>
+	<update id="deleteAttribute" parameterType="org.rs.core.beans.RsSessionAttribute">
+		DELETE FROM SYS_SESSION_ATTRIBUTES WHERE SESSION_PRIMARY_ID=#{session_primary_id} AND ATTRIBUTE_NAME=#{attribute_name}
+	</update>
+	
+	<select id="getSessionCount" resultType="int">
+		SELECT COUNT(SESSION_ID) FROM SYS_SESSION WHERE MAX_INACTIVE_INTERVAL=-1 OR EXPIRY_TIME&gt;=#{ticks}
+	</select>
+	<delete id="deleteBySessionId">
+		DELETE FROM SYS_SESSION WHERE SESSION_ID=#{sessionId}
+	</delete>
+	<delete id="deleteSessionByExpiryTime">
+		DELETE FROM SYS_SESSION WHERE EXPIRY_TIME&lt;=#{currentTimeMillis}
+	</delete>
+	<select id="findByPrincipalName" resultMap="result_map_model" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM SYS_SESSION WHERE PRINCIPAL_NAME=#{principalName}
+	</select>
+	<select id="findBySessionId" resultMap="result_map_model" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM SYS_SESSION WHERE SESSION_ID=#{sessionId}
+	</select>
+	<select id="findAttributeListByPrimaryId" resultMap="result_attribute_map">
+		SELECT <include refid="sqlAttributeColumns"/> FROM SYS_SESSION_ATTRIBUTES WHERE SESSION_PRIMARY_ID=#{session_primary_id}
+	</select>
+</mapper>

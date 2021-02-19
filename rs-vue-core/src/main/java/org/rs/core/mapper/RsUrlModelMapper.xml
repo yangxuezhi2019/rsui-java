@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsUrlModelMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.model.RsUrlRolesModel"
+		extends="org.rs.core.mapper.RsUrlMapper.result_map">
+		<collection property="roles" javaType="ArrayList" column="url=url"
+			select="org.rs.core.mapper.RsUrlModelMapper.queryRoleList"/>
+	</resultMap>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.url !=null and params.url !=""'>AND URL=#{params.url}</if>
+			<if test='params.urlmc !=null and params.urlmc !=""'>AND URLMC=#{params.urlmc}</if>
+			<if test='params.urllx !=null '>AND URLLX=#{params.urllx}</if>
+			<if test='params.injsbh !=null and params.injsbh !=""'>AND URL IN(SELECT URL FROM RS_ROLE_URL WHERE JSBH=#{params.injsbh})</if>
+			<if test='params.nojsbh !=null and params.nojsbh !=""'>AND URL NOT IN(SELECT URL FROM RS_ROLE_URL WHERE JSBH=#{params.nojsbh})</if>
+			<if test='params.mc !=null and params.mc !=""'>AND (URL LIKE ${params.mc} OR URLMC LIKE ${params.mc})</if>
+			<if test='params.urlst !=null and params.urlst !=""'>AND URLST=#{params.urlst}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryUrlRolesList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT * FROM RS_URL <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryRoleList" resultMap="org.rs.core.mapper.RsRoleMapper.result_map" flushCache="true">
+		SELECT A.* FROM RS_ROLE A INNER JOIN RS_ROLE_URL B ON A.JSBH=B.JSBH WHERE B.URL=#{url}
+	</select>
+</mapper>

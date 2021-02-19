@@ -1,0 +1,8 @@
+spring:
+  quartz:
+    jobStoreType: JDBC
+    schedulerName: Task
+    startupDelay: PT3S
+    properties:
+      org.quartz.threadPool.threadCount: 5
+  

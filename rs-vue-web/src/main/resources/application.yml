@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: rs-vue
+  profiles:
+    active: druid,quartz
+  freemarker:
+    request-context-attribute: request
+    suffix: .html
+    content-type: text/html
+    enabled: true
+    cache: false
+    charset: UTF-8
+    allow-request-override: false
+    expose-request-attributes: true
+    expose-session-attributes: true
+    expose-spring-macro-helpers: true
+  mvc:
+    throwExceptionIfNoHandlerFound: true
+    staticPathPattern: /res/**
+    formcontent:
+      filter:
+        enabled: false
+  resources:
+    staticLocations: classpath:/static/res/
+  redis:
+    host: 127.0.0.1
+    port: 6380
+server:
+  port: 9090
+  address: 0.0.0.0
+  servlet:
+    context-path: /rsvue
+    session:
+      timeout: PT1800S
+
+logging:
+  file:
+    path: d:/rs-vue-log
+    name: log.txt
+
+mybatis:
+    dbType: mysql
+
+config:
+  session:
+    cleanup: false
+    cleanupCron: 0,30 * * * * ?
+
+debug: false

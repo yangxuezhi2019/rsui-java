@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsUserMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsUser">
+		<result column="YHBH" property="yhbh"/>
+		<result column="DLMC" property="dlmc"/>
+		<result column="YHMC" property="yhmc"/>
+		<result column="BMBH" property="bmbh"/>
+		<result column="PHONE" property="phone"/>
+		<result column="EMAIL" property="email"/>
+		<result column="ADDRESS" property="address"/>
+		<result column="SFFH" property="sffh"/>
+		<result column="YHLX" property="yhlx"/>
+		<result column="YHZT" property="yhzt"/>
+		<result column="DLCS" property="dlcs"/>
+		<result column="CQJC" property="cqjc"/>
+		<result column="CJSJ" property="cjsj"/>
+		<result column="CJRBH" property="cjrbh"/>
+		<result column="CJRMC" property="cjrmc"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		YHBH,DLMC,YHMC,BMBH,PHONE,EMAIL,ADDRESS,SFFH,YHLX,YHZT,DLCS,CQJC,CJSJ,CJRBH,CJRMC
+	</sql>
+	<!-- <select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_USER <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select> -->
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_USER WHERE YHBH=#{yhbh}
+	</select>
+	<select id="queryBeanForUpdateById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_USER WHERE YHBH=#{yhbh} FOR UPDATE
+	</select>
+	<select id="queryBeanByDlmc" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_USER WHERE DLMC=#{dlmc}
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsUser">
+		INSERT INTO RS_USER(<include refid="sqlColumns"/>)
+		VALUES(#{yhbh,jdbcType=VARCHAR},#{dlmc,jdbcType=VARCHAR},#{yhmc,jdbcType=VARCHAR},#{bmbh,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR},#{sffh,jdbcType=INTEGER},#{yhlx,jdbcType=INTEGER},#{yhzt,jdbcType=INTEGER},#{dlcs,jdbcType=INTEGER},#{cqjc,jdbcType=INTEGER},#{cjsj,jdbcType=TIMESTAMP},#{cjrbh,jdbcType=VARCHAR},#{cjrmc,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateBean" parameterType="org.rs.core.beans.RsUser">
+		UPDATE RS_USER SET
+		DLMC=#{dlmc,jdbcType=VARCHAR},YHMC=#{yhmc,jdbcType=VARCHAR},BMBH=#{bmbh,jdbcType=VARCHAR},PHONE=#{phone,jdbcType=VARCHAR},EMAIL=#{email,jdbcType=VARCHAR},ADDRESS=#{address,jdbcType=VARCHAR},SFFH=#{sffh,jdbcType=INTEGER},YHLX=#{yhlx,jdbcType=INTEGER},YHZT=#{yhzt,jdbcType=INTEGER},DLCS=#{dlcs,jdbcType=INTEGER},CQJC=#{cqjc,jdbcType=INTEGER},CJSJ=#{cjsj,jdbcType=TIMESTAMP},CJRBH=#{cjrbh,jdbcType=VARCHAR},CJRMC=#{cjrmc,jdbcType=VARCHAR}
+		WHERE YHBH=#{yhbh}
+	</update>
+	<update id="updateChkBean" parameterType="org.rs.core.beans.RsUser">
+		UPDATE RS_USER
+		<trim prefix="SET" suffixOverrides=",">
+			<if test='dlmc !=null '>DLMC=#{dlmc,jdbcType=VARCHAR},</if>
+			<if test='yhmc !=null '>YHMC=#{yhmc,jdbcType=VARCHAR},</if>
+			<if test='bmbh !=null '>BMBH=#{bmbh,jdbcType=VARCHAR},</if>
+			<if test='phone !=null '>PHONE=#{phone,jdbcType=VARCHAR},</if>
+			<if test='email !=null '>EMAIL=#{email,jdbcType=VARCHAR},</if>
+			<if test='address !=null '>ADDRESS=#{address,jdbcType=VARCHAR},</if>
+			<if test='sffh !=null '>SFFH=#{sffh,jdbcType=INTEGER},</if>
+			<if test='yhlx !=null '>YHLX=#{yhlx,jdbcType=INTEGER},</if>
+			<if test='yhzt !=null '>YHZT=#{yhzt,jdbcType=INTEGER},</if>
+			<if test='dlcs !=null '>DLCS=#{dlcs,jdbcType=INTEGER},</if>
+			<if test='cqjc !=null '>CQJC=#{cqjc,jdbcType=INTEGER},</if>
+			<if test='cjsj !=null '>CJSJ=#{cjsj,jdbcType=TIMESTAMP},</if>
+			<if test='cjrbh !=null '>CJRBH=#{cjrbh,jdbcType=VARCHAR},</if>
+			<if test='cjrmc !=null '>CJRMC=#{cjrmc,jdbcType=VARCHAR},</if>
+		</trim>
+		WHERE YHBH=#{yhbh}
+	</update>
+	<delete id="deleteBeanById">
+		DELETE FROM RS_USER where YHBH=#{yhbh}
+	</delete>
+	<delete id="deleteBeanByWhereCause">
+		DELETE FROM RS_USER where ${whereCause}
+	</delete>
+</mapper>

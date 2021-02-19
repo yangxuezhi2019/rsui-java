@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsLoginLogMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsLoginLog">
+		<result column="LOGID" property="logid"/>
+		<result column="USERID" property="userId"/>
+		<result column="LOGINNAME" property="loginName"/>
+		<result column="USERNAME" property="userName"/>
+		<result column="DEPTID" property="deptId"/>
+		<result column="DEPTNAME" property="deptName"/>
+		<result column="DEPTPATH" property="deptPath"/>
+		<result column="SQLY" property="sqly"/>
+		<result column="IP" property="ip"/>
+		<result column="LOGINDATE" property="loginDate"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		LOGID,USERID,LOGINNAME,USERNAME,DEPTID,DEPTNAME,DEPTPATH,SQLY,IP,LOGINDATE
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.logid !=null and params.logid !=""'>AND LOGID=#{params.logid}</if>
+			<if test='params.userId !=null and params.userId !=""'>AND USERID=#{params.userId}</if>
+			<if test='params.loginName !=null and params.loginName !=""'>AND LOGINNAME=#{params.loginName}</if>
+			<if test='params.userName !=null and params.userName !=""'>AND USERNAME=#{params.userName}</if>
+			<if test='params.deptId !=null and params.deptId !=""'>AND DEPTID=#{params.deptId}</if>
+			<if test='params.deptName !=null and params.deptName !=""'>AND DEPTNAME=#{params.deptName}</if>
+			<if test='params.deptPath !=null and params.deptPath !=""'>AND DEPTPATH=#{params.deptPath}</if>
+			<if test='params.sqly !=null '>AND SQLY=#{params.sqly}</if>
+			<if test='params.ip !=null and params.ip !=""'>AND IP=#{params.ip}</if>
+			<if test="params.startLoginDate != null " >AND LOGINDATE &gt;= #{params.startLoginDate}</if>
+			<if test="params.endLoginDate != null " >AND LOGINDATE &lt;= #{params.endLoginDate}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_LOGIN_LOG <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_LOGIN_LOG WHERE LOGID=#{logid}
+	</select>
+	<select id="queryBeanForUpdateById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_LOGIN_LOG WHERE LOGID=#{logid} FOR UPDATE
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsLoginLog">
+		INSERT INTO RS_LOGIN_LOG(<include refid="sqlColumns"/>)
+		VALUES(#{logid,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR},#{loginName,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{deptId,jdbcType=VARCHAR},#{deptName,jdbcType=VARCHAR},#{deptPath,jdbcType=VARCHAR},#{sqly,jdbcType=INTEGER},#{ip,jdbcType=VARCHAR},#{loginDate,jdbcType=TIMESTAMP})
+	</insert>
+	<update id="updateBean" parameterType="org.rs.core.beans.RsLoginLog">
+		UPDATE RS_LOGIN_LOG SET
+		USERID=#{userId,jdbcType=VARCHAR},LOGINNAME=#{loginName,jdbcType=VARCHAR},USERNAME=#{userName,jdbcType=VARCHAR},DEPTID=#{deptId,jdbcType=VARCHAR},DEPTNAME=#{deptName,jdbcType=VARCHAR},DEPTPATH=#{deptPath,jdbcType=VARCHAR},SQLY=#{sqly,jdbcType=INTEGER},IP=#{ip,jdbcType=VARCHAR},LOGINDATE=#{loginDate,jdbcType=TIMESTAMP}
+		WHERE LOGID=#{logid}
+	</update>
+	<update id="updateChkBean" parameterType="org.rs.core.beans.RsLoginLog">
+		UPDATE RS_LOGIN_LOG
+		<trim prefix="SET" suffixOverrides=",">
+			<if test='userId !=null '>USERID=#{userId,jdbcType=VARCHAR},</if>
+			<if test='loginName !=null '>LOGINNAME=#{loginName,jdbcType=VARCHAR},</if>
+			<if test='userName !=null '>USERNAME=#{userName,jdbcType=VARCHAR},</if>
+			<if test='deptId !=null '>DEPTID=#{deptId,jdbcType=VARCHAR},</if>
+			<if test='deptName !=null '>DEPTNAME=#{deptName,jdbcType=VARCHAR},</if>
+			<if test='deptPath !=null '>DEPTPATH=#{deptPath,jdbcType=VARCHAR},</if>
+			<if test='sqly !=null '>SQLY=#{sqly,jdbcType=INTEGER},</if>
+			<if test='ip !=null '>IP=#{ip,jdbcType=VARCHAR},</if>
+			<if test='loginDate !=null '>LOGINDATE=#{loginDate,jdbcType=TIMESTAMP},</if>
+		</trim>
+		WHERE LOGID=#{logid}
+	</update>
+	<delete id="deleteBeanById">
+		DELETE FROM RS_LOGIN_LOG where LOGID=#{logid}
+	</delete>
+	<delete id="deleteBeanByWhereCause">
+		DELETE FROM RS_LOGIN_LOG where ${whereCause}
+	</delete>
+</mapper>

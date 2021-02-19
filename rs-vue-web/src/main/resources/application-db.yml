@@ -1,0 +1,9 @@
+rsvue:
+  database:
+    type: mysql
+    url: jdbc:mysql://192.168.10.100:3306/springboot2.3.2?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false
+    driver: com.mysql.jdbc.Driver
+    user: root
+    passwd: 123456
+    checkTable: false
+    validationQuery: select 1 from dual

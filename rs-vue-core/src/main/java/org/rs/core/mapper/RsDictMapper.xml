@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsDictMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsDict">
+		<result column="ZDZJ" property="zdzj"/>
+		<result column="ZDBH" property="zdbh"/>
+		<result column="ZDMC" property="zdmc"/>
+		<result column="ZDLX" property="zdlx"/>
+		<result column="ZDJG" property="zdjg"/>
+		<result column="ZDXH" property="zdxh"/>
+		<result column="ZDZT" property="zdzt"/>
+		<result column="CJSJ" property="cjsj"/>
+		<result column="CJRBH" property="cjrbh"/>
+		<result column="CJRMC" property="cjrmc"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		ZDZJ,ZDBH,ZDMC,ZDLX,ZDJG,ZDXH,ZDZT,CJSJ,CJRBH,CJRMC
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.zdzj !=null and params.zdzj !=""'>AND ZDZJ=#{params.zdzj}</if>
+			<if test='params.zdbh !=null and params.zdbh !=""'>AND ZDBH=#{params.zdbh}</if>
+			<if test='params.zdmc !=null and params.zdmc !=""'>AND ZDMC like ${params.zdmc}</if>
+			<if test='params.zdlx !=null '>AND ZDLX=#{params.zdlx}</if>
+			<if test='params.zdjg !=null '>AND ZDJG=#{params.zdjg}</if>
+			<if test='params.zdxh !=null '>AND ZDXH=#{params.zdxh}</if>
+			<if test='params.zdzt !=null '>AND ZDZT=#{params.zdzt}</if>
+			<if test="params.startCjsj != null " >AND CJSJ &gt;= #{params.startCjsj}</if>
+			<if test="params.endCjsj != null " >AND CJSJ &lt;= #{params.endCjsj}</if>
+			<if test='params.cjrbh !=null and params.cjrbh !=""'>AND CJRBH=#{params.cjrbh}</if>
+			<if test='params.cjrmc !=null and params.cjrmc !=""'>AND CJRMC=#{params.cjrmc}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DICT <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DICT WHERE ZDZJ=#{zdzj}
+	</select>
+	<select id="queryBeanForUpdateById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DICT WHERE ZDZJ=#{zdzj} FOR UPDATE
+	</select>
+	<select id="queryBeanByZdbh" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_DICT WHERE ZDBH=#{zdbh}
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsDict">
+		INSERT INTO RS_DICT(<include refid="sqlColumns"/>)
+		VALUES(#{zdzj,jdbcType=VARCHAR},#{zdbh,jdbcType=VARCHAR},#{zdmc,jdbcType=VARCHAR},#{zdlx,jdbcType=INTEGER},#{zdjg,jdbcType=INTEGER},#{zdxh,jdbcType=INTEGER},#{zdzt,jdbcType=INTEGER},#{cjsj,jdbcType=TIMESTAMP},#{cjrbh,jdbcType=VARCHAR},#{cjrmc,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateBean" parameterType="org.rs.core.beans.RsDict">
+		UPDATE RS_DICT SET
+		ZDBH=#{zdbh,jdbcType=VARCHAR},ZDMC=#{zdmc,jdbcType=VARCHAR},ZDLX=#{zdlx,jdbcType=INTEGER},ZDJG=#{zdjg,jdbcType=INTEGER},ZDXH=#{zdxh,jdbcType=INTEGER},ZDZT=#{zdzt,jdbcType=INTEGER},CJSJ=#{cjsj,jdbcType=TIMESTAMP},CJRBH=#{cjrbh,jdbcType=VARCHAR},CJRMC=#{cjrmc,jdbcType=VARCHAR}
+		WHERE ZDZJ=#{zdzj}
+	</update>
+	<update id="updateChkBean" parameterType="org.rs.core.beans.RsDict">
+		UPDATE RS_DICT
+		<trim prefix="SET" suffixOverrides=",">
+			<if test='zdbh !=null '>ZDBH=#{zdbh,jdbcType=VARCHAR},</if>
+			<if test='zdmc !=null '>ZDMC=#{zdmc,jdbcType=VARCHAR},</if>
+			<if test='zdlx !=null '>ZDLX=#{zdlx,jdbcType=INTEGER},</if>
+			<if test='zdjg !=null '>ZDJG=#{zdjg,jdbcType=INTEGER},</if>
+			<if test='zdxh !=null '>ZDXH=#{zdxh,jdbcType=INTEGER},</if>
+			<if test='zdzt !=null '>ZDZT=#{zdzt,jdbcType=INTEGER},</if>
+			<if test='cjsj !=null '>CJSJ=#{cjsj,jdbcType=TIMESTAMP},</if>
+			<if test='cjrbh !=null '>CJRBH=#{cjrbh,jdbcType=VARCHAR},</if>
+			<if test='cjrmc !=null '>CJRMC=#{cjrmc,jdbcType=VARCHAR},</if>
+		</trim>
+		WHERE ZDZJ=#{zdzj}
+	</update>
+	<delete id="deleteBeanById">
+		DELETE FROM RS_DICT where ZDZJ=#{zdzj}
+	</delete>
+	<delete id="deleteBeanByWhereCause">
+		DELETE FROM RS_DICT where ${whereCause}
+	</delete>
+</mapper>

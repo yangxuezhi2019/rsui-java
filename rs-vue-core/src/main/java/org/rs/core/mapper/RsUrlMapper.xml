@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsUrlMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsUrl">
+		<result column="URL" property="url"/>
+		<result column="URLMC" property="urlmc"/>
+		<result column="URLLX" property="urllx"/>
+		<result column="URLST" property="urlst"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		URL,URLMC,URLLX,URLST
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.url !=null and params.url !=""'>AND URL=#{params.url}</if>
+			<if test='params.urlmc !=null and params.urlmc !=""'>AND URLMC=#{params.urlmc}</if>
+			<if test='params.urllx !=null '>AND URLLX=#{params.urllx}</if>
+			<if test='params.injsbh !=null and params.injsbh !=""'>AND URL IN(SELECT URL FROM RS_ROLE_URL WHERE JSBH=#{params.injsbh})</if>
+			<if test='params.nojsbh !=null and params.nojsbh !=""'>AND URL NOT IN(SELECT URL FROM RS_ROLE_URL WHERE JSBH=#{params.nojsbh})</if>
+			<if test='params.mc !=null and params.mc !=""'>AND (URL LIKE ${params.mc} OR URLMC LIKE ${params.mc})</if>
+			<if test='params.urlst !=null and params.urlst !=""'>AND URLST=#{params.urlst}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_URL <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_URL WHERE URL=#{url}
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsUrl">
+		INSERT INTO RS_URL(<include refid="sqlColumns"/>)
+		VALUES(#{url,jdbcType=VARCHAR},#{urlmc,jdbcType=VARCHAR},#{urllx,jdbcType=INTEGER},#{urlst,jdbcType=INTEGER})
+	</insert>
+	<update id="updateBean" parameterType="org.rs.core.beans.RsUrl">
+		UPDATE RS_URL SET
+		URLMC=#{urlmc,jdbcType=VARCHAR},URLLX=#{urllx,jdbcType=INTEGER},URLST=#{urlst,jdbcType=INTEGER}
+		WHERE URL=#{url}
+	</update>
+	<update id="validUrl">
+		UPDATE RS_URL SET URLST=0
+	</update>
+	<update id="invalidUrl">
+		UPDATE RS_URL SET URLST=1
+	</update>
+	<delete id="deleteInvalidUrl">
+		DELETE FROM RS_URL WHERE URLST=1
+	</delete>
+</mapper>

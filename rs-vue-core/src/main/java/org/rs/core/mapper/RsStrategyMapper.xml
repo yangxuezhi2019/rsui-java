@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsStrategyMapper">
+
+	<insert id="insertStrategyDesc" parameterType="org.rs.core.beans.RsStrategyDesc">
+		INSERT INTO RS_STRATEGY_DESC(MSBH,MSMC,MSXH)
+		VALUES(#{msbh,jdbcType=VARCHAR},#{msmc,jdbcType=VARCHAR},#{msxh,jdbcType=INTEGER})
+	</insert>
+	<delete id="deleteStrategyDesc">
+		DELETE FROM RS_STRATEGY_DESC
+		<where>
+			<if test='msbh !=null'>AND MSBH=#{msbh}</if>
+		</where>
+	</delete>
+	
+	<resultMap id="info_result_map" type="org.rs.core.beans.model.RsStrategyInfoModel">
+		<result column="CLBH" property="clbh"/>
+		<result column="MSBH" property="msbh"/>
+		<result column="MSMC" property="msmc"/>
+		<result column="TMZ" property="tmz"/>
+		<result column="TMZT" property="tmzt"/>
+		<result column="TMXH" property="tmxh"/>
+	</resultMap>
+	
+	<select id="queryStrategyInfoById" resultMap="info_result_map">
+		SELECT CLBH,MSBH,TMZ,TMZT,TMXH FROM RS_STRATEGY_INFO WHERE CLBH=#{clbh} AND MSBH=#{msbh}
+	</select>
+	<insert id="insertStrategyInfo" parameterType="org.rs.core.beans.RsStrategyInfo">
+		INSERT INTO RS_STRATEGY_INFO(CLBH,MSBH,TMZ,TMZT,TMXH)
+		VALUES(#{clbh,jdbcType=VARCHAR},#{msbh,jdbcType=VARCHAR},#{tmz,jdbcType=VARCHAR},#{tmzt,jdbcType=INTEGER},#{tmxh,jdbcType=INTEGER})
+	</insert>
+	<update id="updateStrategyInfo" parameterType="org.rs.core.beans.RsStrategyInfo">
+		UPDATE RS_STRATEGY_INFO SET TMZ=#{tmz},TMZT=#{tmzt} WHERE CLBH=#{clbh} AND MSBH=#{msbh}
+	</update>
+	<delete id="deleteStrategyInfo">
+		DELETE FROM RS_STRATEGY_INFO
+		<where>
+			<if test='tmbh !=null'>AND TMBH=#{tmbh}</if>
+		</where>
+	</delete>
+	
+	<insert id="insertStrategy" parameterType="org.rs.core.beans.RsStrategy">
+		INSERT INTO RS_STRATEGY(CLBH,CLMC,CLZT,CLXH)
+		VALUES(#{clbh,jdbcType=VARCHAR},#{clmc,jdbcType=VARCHAR},#{clzt,jdbcType=INTEGER},#{clxh,jdbcType=INTEGER})
+	</insert>
+	<update id="updateStrategyZt">
+		UPDATE RS_STRATEGY SET CLZT=#{clzt} WHERE CLBH=#{clbh}
+	</update>
+	<update id="invalidStrategy">
+		UPDATE RS_STRATEGY SET CLZT=1 WHERE CLZT=0
+	</update>
+	<delete id="deleteStrategy">
+		DELETE FROM RS_STRATEGY
+		<where>
+			<if test='clbh !=null'>AND CLBH=#{clbh}</if>
+		</where>
+	</delete>
+	
+	<resultMap id="strategy_result_map" type="org.rs.core.beans.model.RsStrategyModel">
+		<result column="CLBH" property="clbh"/>
+		<result column="CLMC" property="clmc"/>
+		<result column="CLZT" property="clzt"/>
+		<result column="CLXH" property="clxh"/>
+		<collection property="clList" column="clbh=clbh" javaType="ArrayList"
+			select="org.rs.core.mapper.RsStrategyMapper.queryStrategyInfo"/>
+	</resultMap>
+	<select id="queryStrategyList" resultMap="strategy_result_map" flushCache="true">
+		SELECT CLBH,CLMC,CLZT,CLXH FROM RS_STRATEGY ORDER BY CLXH
+	</select>
+	<select id="queryStrategyByClbh" resultMap="strategy_result_map" flushCache="true">
+		SELECT CLBH,CLMC,CLZT,CLXH FROM RS_STRATEGY WHERE CLBH=#{clbh}
+	</select>
+	<select id="queryStrategyInfo" resultMap="info_result_map">
+		SELECT A.*,B.MSMC FROM RS_STRATEGY_INFO A INNER JOIN RS_STRATEGY_DESC B ON A.MSBH=B.MSBH
+		WHERE A.CLBH=#{clbh} ORDER BY A.TMXH
+	</select>
+	<select id="queryCurrentStrategyInfo" resultType="org.rs.core.beans.RsStrategyInfo">
+		SELECT MSBH,TMZ FROM RS_STRATEGY A INNER JOIN RS_STRATEGY_INFO B ON A.CLBH=B.CLBH WHERE CLZT=0
+	</select>
+</mapper>

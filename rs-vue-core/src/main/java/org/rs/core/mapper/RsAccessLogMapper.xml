@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsAccessLogMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsAccessLog">
+		<result column="LOGID" property="logid"/>
+		<result column="OPERATION" property="operation"/>
+		<result column="METHODNAME" property="methodName"/>
+		<result column="PARAMETERS" property="parameters"/>
+		<result column="MILLISECONDS" property="milliseconds"/>
+		<result column="IP" property="ip"/>
+		<result column="ACCESSDATE" property="accessDate"/>
+		<result column="USERID" property="userId"/>
+		<result column="USERNAME" property="userName"/>
+		<result column="DEPTID" property="deptId"/>
+		<result column="DEPTNAME" property="deptName"/>
+		<result column="DEPTPATH" property="deptPath"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		LOGID,OPERATION,METHODNAME,PARAMETERS,MILLISECONDS,IP,ACCESSDATE,USERID,USERNAME,DEPTID,DEPTNAME,DEPTPATH
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.logid !=null and params.logid !=""'>AND LOGID=#{params.logid}</if>
+			<if test='params.operation !=null and params.operation !=""'>AND OPERATION=#{params.operation}</if>
+			<if test='params.methodName !=null and params.methodName !=""'>AND METHODNAME=#{params.methodName}</if>
+			<if test='params.parameters !=null and params.parameters !=""'>AND PARAMETERS=#{params.parameters}</if>
+			<if test='params.milliseconds !=null '>AND MILLISECONDS=#{params.milliseconds}</if>
+			<if test='params.ip !=null and params.ip !=""'>AND IP=#{params.ip}</if>
+			<if test="params.startAccessDate != null " >AND ACCESSDATE &gt;= #{params.startAccessDate}</if>
+			<if test="params.endAccessDate != null " >AND ACCESSDATE &lt;= #{params.endAccessDate}</if>
+			<if test='params.userId !=null and params.userId !=""'>AND USERID=#{params.userId}</if>
+			<if test='params.userName !=null and params.userName !=""'>AND USERNAME=#{params.userName}</if>
+			<if test='params.deptId !=null and params.deptId !=""'>AND DEPTID=#{params.deptId}</if>
+			<if test='params.deptName !=null and params.deptName !=""'>AND DEPTNAME=#{params.deptName}</if>
+			<if test='params.deptPath !=null and params.deptPath !=""'>AND DEPTPATH=#{params.deptPath}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_ACCESS_LOG <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_ACCESS_LOG WHERE LOGID=#{logid}
+	</select>
+	<select id="queryBeanForUpdateById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_ACCESS_LOG WHERE LOGID=#{logid} FOR UPDATE
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsAccessLog">
+		INSERT INTO RS_ACCESS_LOG(<include refid="sqlColumns"/>)
+		VALUES(#{logid,jdbcType=VARCHAR},#{operation,jdbcType=VARCHAR},#{methodName,jdbcType=VARCHAR},#{parameters,jdbcType=VARCHAR},#{milliseconds,jdbcType=INTEGER},#{ip,jdbcType=VARCHAR},#{accessDate,jdbcType=TIMESTAMP},#{userId,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{deptId,jdbcType=VARCHAR},#{deptName,jdbcType=VARCHAR},#{deptPath,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateBean" parameterType="org.rs.core.beans.RsAccessLog">
+		UPDATE RS_ACCESS_LOG SET
+		OPERATION=#{operation,jdbcType=VARCHAR},METHODNAME=#{methodName,jdbcType=VARCHAR},PARAMETERS=#{parameters,jdbcType=VARCHAR},MILLISECONDS=#{milliseconds,jdbcType=INTEGER},IP=#{ip,jdbcType=VARCHAR},ACCESSDATE=#{accessDate,jdbcType=TIMESTAMP},USERID=#{userId,jdbcType=VARCHAR},USERNAME=#{userName,jdbcType=VARCHAR},DEPTID=#{deptId,jdbcType=VARCHAR},DEPTNAME=#{deptName,jdbcType=VARCHAR},DEPTPATH=#{deptPath,jdbcType=VARCHAR}
+		WHERE LOGID=#{logid}
+	</update>
+	<update id="updateChkBean" parameterType="org.rs.core.beans.RsAccessLog">
+		UPDATE RS_ACCESS_LOG
+		<trim prefix="SET" suffixOverrides=",">
+			<if test='operation !=null '>OPERATION=#{operation,jdbcType=VARCHAR},</if>
+			<if test='methodName !=null '>METHODNAME=#{methodName,jdbcType=VARCHAR},</if>
+			<if test='parameters !=null '>PARAMETERS=#{parameters,jdbcType=VARCHAR},</if>
+			<if test='milliseconds !=null '>MILLISECONDS=#{milliseconds,jdbcType=INTEGER},</if>
+			<if test='ip !=null '>IP=#{ip,jdbcType=VARCHAR},</if>
+			<if test='accessDate !=null '>ACCESSDATE=#{accessDate,jdbcType=TIMESTAMP},</if>
+			<if test='userId !=null '>USERID=#{userId,jdbcType=VARCHAR},</if>
+			<if test='userName !=null '>USERNAME=#{userName,jdbcType=VARCHAR},</if>
+			<if test='deptId !=null '>DEPTID=#{deptId,jdbcType=VARCHAR},</if>
+			<if test='deptName !=null '>DEPTNAME=#{deptName,jdbcType=VARCHAR},</if>
+			<if test='deptPath !=null '>DEPTPATH=#{deptPath,jdbcType=VARCHAR},</if>
+		</trim>
+		WHERE LOGID=#{logid}
+	</update>
+	<delete id="deleteBeanById">
+		DELETE FROM RS_ACCESS_LOG where LOGID=#{logid}
+	</delete>
+	<delete id="deleteBeanByWhereCause">
+		DELETE FROM RS_ACCESS_LOG where ${whereCause}
+	</delete>
+</mapper>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsUserAuthMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsUserAuth">
+		<result column="SQBH" property="sqbh"/>
+		<result column="SQLY" property="sqly"/>
+		<result column="DLMC" property="dlmc"/>
+		<result column="YHBH" property="yhbh"/>
+		<result column="CJSJ" property="cjsj"/>
+		<result column="CJRBH" property="cjrbh"/>
+		<result column="CJRMC" property="cjrmc"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		SQBH,SQLY,DLMC,YHBH,CJSJ,CJRBH,CJRMC
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.sqbh !=null and params.sqbh !=""'>AND SQBH=#{params.sqbh}</if>
+			<if test='params.sqly !=null '>AND SQLY=#{params.sqly}</if>
+			<if test='params.dlmc !=null and params.dlmc !=""'>AND DLMC=#{params.dlmc}</if>
+			<if test='params.yhbh !=null and params.yhbh !=""'>AND YHBH=#{params.yhbh}</if>
+			<if test="params.startCjsj != null " >AND CJSJ &gt;= #{params.startCjsj}</if>
+			<if test="params.endCjsj != null " >AND CJSJ &lt;= #{params.endCjsj}</if>
+			<if test='params.cjrbh !=null and params.cjrbh !=""'>AND CJRBH=#{params.cjrbh}</if>
+			<if test='params.cjrmc !=null and params.cjrmc !=""'>AND CJRMC=#{params.cjrmc}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_USER_AUTH <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_USER_AUTH WHERE SQBH=#{sqbh}
+	</select>
+	<select id="queryBeanForUpdateById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_USER_AUTH WHERE SQBH=#{sqbh} FOR UPDATE
+	</select>
+	<select id="queryBeanBySqlyAndDlmc" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_USER_AUTH WHERE SQLY=#{sqly} AND DLMC=#{dlmc}
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsUserAuth">
+		INSERT INTO RS_USER_AUTH(<include refid="sqlColumns"/>)
+		VALUES(#{sqbh,jdbcType=VARCHAR},#{sqly,jdbcType=INTEGER},#{dlmc,jdbcType=VARCHAR},#{yhbh,jdbcType=VARCHAR},#{cjsj,jdbcType=TIMESTAMP},#{cjrbh,jdbcType=VARCHAR},#{cjrmc,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateBean" parameterType="org.rs.core.beans.RsUserAuth">
+		UPDATE RS_USER_AUTH SET
+		SQLY=#{sqly,jdbcType=INTEGER},DLMC=#{dlmc,jdbcType=VARCHAR},YHBH=#{yhbh,jdbcType=VARCHAR},CJSJ=#{cjsj,jdbcType=TIMESTAMP},CJRBH=#{cjrbh,jdbcType=VARCHAR},CJRMC=#{cjrmc,jdbcType=VARCHAR}
+		WHERE SQBH=#{sqbh}
+	</update>
+	<update id="updateChkBean" parameterType="org.rs.core.beans.RsUserAuth">
+		UPDATE RS_USER_AUTH
+		<trim prefix="SET" suffixOverrides=",">
+			<if test='sqly !=null '>SQLY=#{sqly,jdbcType=INTEGER},</if>
+			<if test='dlmc !=null '>DLMC=#{dlmc,jdbcType=VARCHAR},</if>
+			<if test='yhbh !=null '>YHBH=#{yhbh,jdbcType=VARCHAR},</if>
+			<if test='cjsj !=null '>CJSJ=#{cjsj,jdbcType=TIMESTAMP},</if>
+			<if test='cjrbh !=null '>CJRBH=#{cjrbh,jdbcType=VARCHAR},</if>
+			<if test='cjrmc !=null '>CJRMC=#{cjrmc,jdbcType=VARCHAR},</if>
+		</trim>
+		WHERE SQBH=#{sqbh}
+	</update>
+	<delete id="deleteBeanById">
+		DELETE FROM RS_USER_AUTH where SQBH=#{sqbh}
+	</delete>
+	<delete id="deleteBeanByWhereCause">
+		DELETE FROM RS_USER_AUTH where ${whereCause}
+	</delete>
+</mapper>

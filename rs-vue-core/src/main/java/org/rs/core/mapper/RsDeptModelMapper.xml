@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsDeptModelMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.model.RsDeptModel" 
+		extends="org.rs.core.mapper.RsDeptMapper.result_map">
+		<result column="BMPMC" property="bmpmc"/>
+	</resultMap>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.bmbh !=null and params.bmbh !=""'>AND A.BMBH=#{params.bmbh}</if>
+			<if test='params.bmmc !=null and params.bmmc !=""'>AND A.BMMC like ${params.bmmc}</if>
+			<if test='params.bmpbh !=null and params.bmpbh !=""'>AND A.BMPBH=#{params.bmpbh}</if>
+			<if test='params.bmzt !=null '>AND A.BMZT=#{params.bmzt}</if>
+			<if test='params.bmlj !=null and params.bmlj !=""'>AND A.BMLJ like ${params.bmlj}</if>
+			<if test='params.bmxh !=null '>AND BMXH=#{params.bmxh}</if>
+			<if test="params.startCjsj != null " >AND A.CJSJ &gt;= #{params.startCjsj}</if>
+			<if test="params.endCjsj != null " >AND A.CJSJ &lt;= #{params.endCjsj}</if>
+			<if test='params.cjrbh !=null and params.cjrbh !=""'>AND A.CJRBH=#{params.cjrbh}</if>
+			<if test='params.cjrmc !=null and params.cjrmc !=""'>AND A.CJRMC=#{params.cjrmc}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT A.*,B.BMMC AS BMPMC FROM RS_DEPT A LEFT JOIN RS_DEPT B ON A.BMPBH=B.BMBH <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+</mapper>

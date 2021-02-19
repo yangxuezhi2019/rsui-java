@@ -1,0 +1,13 @@
+# Initializers
+org.springframework.context.ApplicationContextInitializer=\
+org.rs.core.config.CoreAppContextInitializer
+
+# Application Listeners
+org.springframework.context.ApplicationListener=\
+
+# Auto Configuration Import Filters
+org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=\
+org.rs.core.config.CoreAutoConfigurationImportFilter
+
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\

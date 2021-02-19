@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rs.core.mapper.RsRoleMenuMapper">
+	<resultMap id="result_map" type="org.rs.core.beans.RsRoleMenu">
+		<result column="JSBH" property="jsbh"/>
+		<result column="CDBH" property="cdbh"/>
+		<result column="CJSJ" property="cjsj"/>
+		<result column="CJRBH" property="cjrbh"/>
+		<result column="CJRMC" property="cjrmc"/>
+	</resultMap>
+	<sql id="sqlColumns">
+		JSBH,CDBH,CJSJ,CJRBH,CJRMC
+	</sql>
+	<sql id="sqlWhere">
+		<where>
+			<if test='params.jsbh !=null and params.jsbh !=""'>AND JSBH=#{params.jsbh}</if>
+			<if test='params.cdbh !=null and params.cdbh !=""'>AND CDBH=#{params.cdbh}</if>
+			<if test="params.startCjsj != null " >AND CJSJ &gt;= #{params.startCjsj}</if>
+			<if test="params.endCjsj != null " >AND CJSJ &lt;= #{params.endCjsj}</if>
+			<if test='params.cjrbh !=null and params.cjrbh !=""'>AND CJRBH=#{params.cjrbh}</if>
+			<if test='params.cjrmc !=null and params.cjrmc !=""'>AND CJRMC like ${params.cjrmc}</if>
+			<if test='params.whereCause !=null and params.whereCause !=""'>AND ${params.whereCause}</if>
+		</where>
+	</sql>
+	<select id="queryBeanList" resultMap="result_map" parameterType="java.util.Map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_ROLE_MENU <include refid="sqlWhere"/>
+		<if test='params.orderCause !=null and params.orderCause !=""'> ${params.orderCause}</if>
+	</select>
+	<select id="queryBeanById" resultMap="result_map" flushCache="true">
+		SELECT <include refid="sqlColumns"/> FROM RS_ROLE_MENU WHERE JSBH=#{jsbh} AND CDBH=#{cdbh}
+	</select>
+	<insert id="insertBean" parameterType="org.rs.core.beans.RsRoleMenu">
+		INSERT INTO RS_ROLE_MENU(<include refid="sqlColumns"/>)
+		VALUES(#{jsbh,jdbcType=VARCHAR},#{cdbh,jdbcType=VARCHAR},#{cjsj,jdbcType=TIMESTAMP},#{cjrbh,jdbcType=VARCHAR},#{cjrmc,jdbcType=VARCHAR})
+	</insert>
+	<delete id="deleteBeanById">
+		DELETE FROM RS_ROLE_MENU WHERE JSBH=#{jsbh} AND CDBH=#{cdbh}
+	</delete>
+	
+	<delete id="deleteRoleMenuByJsbh">
+		DELETE FROM RS_ROLE_MENU WHERE JSBH=#{jsbh}
+	</delete>
+	
+	<select id="queryMenusByJsbh" resultMap="org.rs.core.mapper.RsMenuMapper.result_map" flushCache="true">
+		SELECT B.* FROM RS_ROLE_MENU A INNER JOIN RS_MENU B ON A.CDBH=B.CDBH 
+		<if test='jsbh !=null'>
+			WHERE A.JSBH IN
+			<foreach collection="jsbh" item ="item" open="(" close=")" separator=",">
+		        #{item}
+		 	</foreach>
+		</if>
+		ORDER BY B.PCDBH,B.CDXH
+	</select>
+</mapper>
