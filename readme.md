@@ -1,7 +1,7 @@
 # RSUI 介绍
 - JAVA平台的前后端分离的权限管理系统
 - 前端页面基于element-ui开发
-- 后台基于SpringBoot2.3.2、SpringMvc、SpringSecurity、MyBatis
+- 后台基于SpringBoot2.3.2、SpringMvc、SpringSecurity、MyBatis。
 
 # 主要功能
 
